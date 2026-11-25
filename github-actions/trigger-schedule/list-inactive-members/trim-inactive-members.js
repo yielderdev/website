@@ -78,7 +78,8 @@ async function removeInactiveMembers(previousContributors, inactiveWithOpenSkill
   for (const username in currentTeamMembers) {   
     if ((!previousContributors[username]) && !(username in inactiveWithOpenIssue)) {
       // Prior to deletion, confirm that member is on the baseTeam
-      await addTeamMember(github, context, baseTeam, username);
+      //await addTeamMember(github, context, baseTeam, username);
+      console.log('Would add to base team ' + baseTeam + ': ' + username);
       // If member was not on the previouslyNotified list, do not remove yet
       if ((previouslyNotified.length > 0) && !(previouslyNotified.includes(username))) {
         console.log(`Member was not on last month's 'Inactive Members' list, do not remove: ${username}`);
@@ -86,11 +87,13 @@ async function removeInactiveMembers(previousContributors, inactiveWithOpenSkill
         // Remove member from all teams (except baseTeam)
         for (const team of [writeTeam, mergeTeam]) {
           // https://docs.github.com/en/rest/teams/members?apiVersion=2022-11-28#remove-team-membership-for-a-user
-          await github.request('DELETE /orgs/{org}/teams/{team_slug}/memberships/{username}', {
+          /*await github.request('DELETE /orgs/{org}/teams/{team_slug}/memberships/{username}', {
             org: context.repo.owner,
             team_slug: team,
             username,
           });
+          */
+          console.log(`Would remove member: `+ username + ` from team: ` + team);
         }
         removedMembers.push(username);
         // After removal, close member's "Skills Issue", if open
@@ -112,20 +115,25 @@ async function removeInactiveMembers(previousContributors, inactiveWithOpenSkill
  */
 async function closePrework(member, issueNum){ 
   // https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#update-an-issue
-  await github.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}', {
+  /*await github.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}', {
     owner: context.repo.owner,
     repo: context.repo.repo,
     issue_number: issueNum,
     state: 'closed'
   });
   console.log(`Closing "Skills Issue" issue number ${issueNum} for ${member}`);
+  */
+  console.log(`Would close "Skills Issue" issue number ${issueNum} for ${member}`);
   // https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
-  await github.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+  
+  /*await github.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
     owner: context.repo.owner,
     repo: context.repo.repo,
     issue_number: issueNum,
     body: 'The Hack for LA Bot has closed this issue due to member inactivity.'
   });
+  */
+  console.log(`Would add comment to "Skills Issue" issue number ${issueNum} for ${member}`);
 }
 
 
